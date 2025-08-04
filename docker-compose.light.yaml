@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  netdata:
+    image: netdata/netdata:v2.6
+    container_name: netdata
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdata_lib:/var/lib/netdata
+      - netdata_cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - ./config:/etc/netdata:ro
+    ports:
+      - "127.0.0.1:19999:19999"
+    networks:
+      - coolify
+
+volumes:
+  netdata_lib:
+  netdata_cache:
+
+networks:
+  coolify:
+    external: true
